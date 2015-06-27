@@ -1,10 +1,10 @@
-
 #s3cp
 An scp-style command-line tool for uploading and downloading files to and from an AWS S3 bucket.
 
 ### TOC
 * [License](README.md#license)
-* [Project Status](README.md#current-status)
+* [Current Features](README.md#current-features)
+* [Known Issues](README.md#known-issues)
 * [Quick Start](README.md#quick-start)
 * [How to use s3cp](README.md#how-to-use-s3cp)
   * [Install s3cp](README.md#step-1---install-s3cp)
@@ -17,31 +17,34 @@ An scp-style command-line tool for uploading and downloading files to and from a
 ### License
 Released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0)
 
-### Current Status
-s3cp is currently in beta verion 0.2
+### Current Features
 * Uploading to an S3 bucket
 * Downloading from an S3 bucket
 * Errors are trapped and reported properly
 * Exit codes work as expected (0 for success, non-0 for failure)
 
+### Known Issues
+* In production use, the uploads randomly fail. It'll work one day and not the next.
+  It is possible that the system is low on memory, and the failure is actually
+  a memory problem (my server runs tight on memory at the moment), or that the
+  AWS s3 library just has unresolved bugs in the s3manager or s3 service
+  package.
+
 # Quick Start
 This quick start assumes you know how to create access keys for your AWS bucket, setup
 policies in AWS, etc. If you don't, you need [How to use s3cp](README.md#how-to-use-s3cp) instead.
 
-Download the [binary zipfile](https://github.com/tdunnington/s3cp/releases/download/v0.2-beta/s3cp-0.2.zip) and extract the executable for your OS:
-* For 64-bit Windows 7,8,8.1 - windows/amd64/s3cp.exe
-* For 64-bit linux - linux/amd64/s3cp
-* For OSX - osx/amd64/s3cp
-* There are many other platforms and architectures in the zip file
+s3cp is now part of the larger [s3tools project](https://github.com/tdunnington/s3tools/README.md).
+For installation instructions, please read the s3tools README.
 
-To download from S3 (*nix):
+To download from S3 (linux):
 ```
 export AWS_ACCESS_KEY_ID=<your key id here>
 export AWS_SECRET_ACCESS_KEY=<your key here>
 s3cp s3:bucket:/path/to/file.example /destination/path/file.example
 ```
 
-To upload to S3 (*nix):
+To upload to S3 (linux):
 ```
 export AWS_ACCESS_KEY_ID=<your key id here>
 export AWS_SECRET_ACCESS_KEY=<your key here>
@@ -91,7 +94,7 @@ that will allow you to upload and download to the target bucket. The advantage o
 swap out credentials, but the downside is that the credentials have to be stored on the system, where they are
 vulnerable.
 
-Create a new group in IAM (let's call it "s3cp_test"). Do not create a policy for the group when you create it; 
+Create a new group in IAM (let's call it "s3cp_test"). Do not create a policy for the group when you create it;
 we'll add the policy in the next step:
 
 ...TODO add images...
@@ -100,7 +103,7 @@ Now add an inline policy to the group:
 
 ...TODO add images...
 
-Use the "Custom Policy" option and paste this sample policy into the editor. Note that you have to change the 
+Use the "Custom Policy" option and paste this sample policy into the editor. Note that you have to change the
 bucket name:
 
 ```json
@@ -212,13 +215,13 @@ Otherwise, you have some commandline options:
   -region: (optional) The AWS region holding the target bucket; defaults to 'us-east-1'
 ```
 
-**Note about region**: The region name will display in the AWS console differently than the region id 
+**Note about region**: The region name will display in the AWS console differently than the region id
 s3cp expects. To find your region id, login to the AWS console, open your bucket, and you'll see the
 region id in the URL, like so: `https://console.aws.amazon.com/s3/home?region=us-east-1#&bucket=...`
 
 ### About this project
 I started this project because I wanted to backup my websites to s3, but getting the file up to S3 isn't
-trivial. Yes there were some publicly available options, including python scripts, and I suppose if I 
+trivial. Yes there were some publicly available options, including python scripts, and I suppose if I
 had looked long enough I might have found somethig like s3cp. But I didn't/couldn't and just decided to
 do my own.
 
@@ -227,10 +230,11 @@ people to install and use. Go should also be cross-platform, so I'm hopeful that
 and OSX as well as it works on Linux.
 
 As I was working on this, I realized I could do a lot of other tools, and so I intend to extend this to an
-s3tools project at some point. In additiona to s3cp, I would like to do s3rm, s3mkdir, s3ls 
+s3tools project at some point. In additiona to s3cp, I would like to do s3rm, s3mkdir, s3ls
 and more. With the complete toolkit, you should be able to script some cool cmdline jobs.
 
 ### Upcoming Features
 For s3cp, still left to do are:
 * Redirect STDIN and STDOUT, or piping
 * On-the-fly compression
+* Recursive copy
